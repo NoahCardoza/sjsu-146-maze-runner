@@ -16,6 +16,10 @@ public class AdjacencyList<T> {
     public AdjacencyList() {
         vertexes = new HashMap<>();
     }
+    /**
+     *
+     */
+
 
     /**
      * Adds a new directed edge to the graph.

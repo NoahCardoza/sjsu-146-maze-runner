@@ -14,5 +14,12 @@ public class Main {
 
         maze55.displayCells();
         maze55.displayMaze();
+        System.out.println("North" + MazeGenerator.NORTH);
+        System.out.println("East" + MazeGenerator.EAST);
+        System.out.println("South" + MazeGenerator.SOUTH);
+        System.out.println("West" + MazeGenerator.WEST);
+
+
+
     }
 }
