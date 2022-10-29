@@ -1,17 +1,24 @@
 public class Point {
-    private int row;
-    private int col;
+    private final int row;
+    private final int col;
     private int state;
-
-    public static int UNVISITED = 0;
-    public static int VISITED = 1;
-    public static int CHOSEN = 2;
-    public static int DISCARDED = -1;
+    private int seenAt;
+    public static final int UNVISITED = 0;
+    public static final int VISITED = 1;
+    public static final int CHOSEN = 2;
 
     public Point(int row, int col){
-        this.row = col;
-        this.row = col;
-        this.state = 0;
+        this.row = row;
+        this.col = col;
+        this.state = UNVISITED;
+    }
+
+    public int getSeenAt() {
+        return seenAt;
+    }
+
+    public void setSeenAt(int seenAt) {
+        this.seenAt = seenAt;
     }
 
     public int getRow() {
@@ -26,16 +33,17 @@ public class Point {
         return state;
     }
 
-    public void setRow(int row) {
-        this.row = row;
-    }
-
-    public void setCol(int col) {
-        this.col = col;
-    }
-
     public void setState(int state) {
         this.state = state;
+    }
+
+    @Override
+    public String toString() {
+        return "Point{" +
+                "row=" + row +
+                ", col=" + col +
+                ", state=" + state +
+                '}';
     }
 
     @Override

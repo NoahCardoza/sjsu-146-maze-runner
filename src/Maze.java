@@ -1,16 +1,17 @@
 import java.util.Collections;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /*
  * recursive backtracking algorithm
  * shamelessly borrowed from the ruby at
  * http://weblog.jamisbuck.org/2010/12/27/maze-generation-recursive-backtracking
  */
-public class MazeGenerator {
-    public static int NORTH = 0b1;
-    public static int SOUTH = 0b10;
-    public static int EAST = 0b100;
-    public static int WEST = 0b1000;
+public class Maze {
+    public static final int NORTH = 0b1;
+    public static final int SOUTH = 0b10;
+    public static final int EAST = 0b100;
+    public static final int WEST = 0b1000;
 
     //coordinates row x, column y
     private final int width;
@@ -18,12 +19,18 @@ public class MazeGenerator {
     //stores the cells
     private final int[][] maze;
 
-    public MazeGenerator(int size) {
+    public Maze(int size) {
         this(size, size);
     }
 
+    public Maze(int[][] maze) {
+        this.width = maze.length;
+        this.height = maze[0].length;
+        this.maze = maze;
+    }
+
     //Constructor
-    public MazeGenerator(int width, int height) {
+    public Maze(int width, int height) {
         this.width = width;
         this.height = height;
         maze = new int[width][height];
@@ -32,6 +39,10 @@ public class MazeGenerator {
 
     //prints the maze with the cells and walls removed
     public void displayMaze() {
+        displayMaze((row, col) -> " ");
+    }
+
+    public void displayMaze(MazeGetter solution) {
         for (int i = 0; i < width; i++) {
             // draw the north edge
             for (int j = 0; j < height; j++) {
@@ -40,7 +51,7 @@ public class MazeGenerator {
             System.out.println("+");
             // draw the west edge
             for (int j = 0; j < height; j++) {
-                System.out.print((maze[i][j] & WEST) == 0 ? "|   " : "    ");
+                System.out.print((maze[i][j] & WEST) == 0 ? "| " + solution.get(i, j) + " " : "  " + solution.get(i, j) + " ");
             }
             System.out.println("|");
         }
@@ -50,6 +61,7 @@ public class MazeGenerator {
         }
         System.out.println("+");
     }
+
 
     //recursive perfect maze generator, using a modified DFS
     //(cx,cy) coordinates of current cell, and (nx,ny) coordinates of neighbor cell
@@ -68,10 +80,12 @@ public class MazeGenerator {
                 //example if a cell has east (4) and west (8) neighbor openings, maze holds 12
 
                 maze[cx][cy] |= direction.bit;
+
                 //update neighbor cell
                 maze[nx][ny] |= direction.opposite.bit;
                 //recursive call to neighbor cell
                 generateMaze(nx, ny);
+//                maze[nx][ny] ^= direction.opposite.bit;
             }
         }
     }
@@ -88,6 +102,10 @@ public class MazeGenerator {
     //checks if 0<=v<upper
     private static boolean between(int v, int upper) {
         return (v >= 0) && (v < upper);
+    }
+
+    public int[][] getMaze() {
+        return maze;
     }
 
     // enum type for all directions
@@ -114,5 +132,11 @@ public class MazeGenerator {
             this.dx = dx;
             this.dy = dy;
         }
-    };
+    }
+
+    public String exportTextCase() {
+        return String.format("{{%s}}", Arrays.stream(maze).map(row -> Arrays.stream(row)
+                .mapToObj(String::valueOf)
+                .collect(Collectors.joining(", "))).collect(Collectors.joining("}, {")));
+    }
 }

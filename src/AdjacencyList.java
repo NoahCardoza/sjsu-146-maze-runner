@@ -16,10 +16,6 @@ public class AdjacencyList<T> {
     public AdjacencyList() {
         vertexes = new HashMap<>();
     }
-    /**
-     *
-     */
-
 
     /**
      * Adds a new directed edge to the graph.
@@ -31,11 +27,12 @@ public class AdjacencyList<T> {
         if (!vertexes.containsKey(from)) {
             vertexes.put(from, new HashSet<>());
         }
-        vertexes.get(from).add(to);
 
         if (!vertexes.containsKey(to)) {
             vertexes.put(to, new HashSet<>());
         }
+
+        vertexes.get(from).add(to);
     }
 
     public boolean searchEdge(T from, T to) {
