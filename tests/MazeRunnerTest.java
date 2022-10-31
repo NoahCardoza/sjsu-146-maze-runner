@@ -1,5 +1,10 @@
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+
+
 class MazeRunnerTest {
     @Test
     public void testMazeRunner() {
@@ -35,6 +40,30 @@ class MazeRunnerTest {
         MazeRunner mazeRunner = new DFSMazeRunner(maze);
         mazeRunner.run();
         mazeRunner.report();
+    }
 
+    @Test
+    public void fromFile() throws IOException {
+        Path path = Path.of("sample-inputs/maze4.txt");
+        Maze maze = Maze.fromPath(path);
+        maze.displayMaze();
+        MazeRunner mazeRunner = new DFSMazeRunner(maze);
+        mazeRunner.run();
+        mazeRunner.report();
+    }
+
+    @Test
+    public void sampleInputs() throws IOException {
+        File folder = new File("./sample-inputs");
+        for (final File file : folder.listFiles()) {
+            if (file.getName().endsWith(".txt")) {
+                Maze maze = Maze.fromPath(file.toPath());
+                maze.displayMaze();
+
+                MazeRunner mazeRunner = new DFSMazeRunner(maze);
+                mazeRunner.run();
+                mazeRunner.report();
+            }
+        }
     }
 }

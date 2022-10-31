@@ -52,12 +52,12 @@ public abstract class MazeRunner {
                 Point current = matrix.get(row).get(col);
                 Point neighbor;
 
-                if ((node & Maze.NORTH) == Maze.NORTH){
+                if ((node & Maze.NORTH) == Maze.NORTH && row - 1 >= 0){
                     neighbor = matrix.get(row - 1).get(col);
                     graph.addEdge(current, neighbor);
                 }
 
-                if ((node & Maze.SOUTH) == Maze.SOUTH){
+                if ((node & Maze.SOUTH) == Maze.SOUTH && row + 1 < maze.getHeight()){
                     neighbor = matrix.get(row + 1).get(col);
                     graph.addEdge(current, neighbor);
                 }
@@ -102,7 +102,6 @@ public abstract class MazeRunner {
         });
 
         maze.displayMaze((row, col) -> get(row, col).getState() == Point.CHOSEN ? "#" : " ");
-
 
         System.out.print("Path: ");
         int pathLength = 0;

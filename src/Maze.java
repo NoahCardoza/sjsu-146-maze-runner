@@ -1,3 +1,7 @@
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -21,6 +25,40 @@ public class Maze {
 
     public Maze(int size) {
         this(size, size);
+    }
+
+    /**
+     * Reads a printed maze and generates the maze matrix.
+     *
+     * @param path the file path of the input file
+     *
+     * @return returns a new Maze instance with data from the new file
+     *
+     * @throws IOException if the file cannot be found or read
+     */
+    static public Maze fromPath(Path path) throws IOException {
+        String fileContents = Files.readString(path, StandardCharsets.UTF_8);
+        String[] lines = fileContents.split("\n");
+
+        String[] dimensions = lines[0].trim().split("\s");
+
+        int height = Integer.parseInt(dimensions[0]);
+        int width = Integer.parseInt(dimensions[1]);
+
+        int[][] maze = new int[width][height];
+
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                int row = (j * 2) + 2; // +1 for the first line
+                int col = (i * 2) + 1;
+                maze[j][i] |= (lines[row - 1].charAt(col) == ' ' ? Maze.NORTH : 0)
+                               | (lines[row + 1].charAt(col) == ' ' ? Maze.SOUTH : 0)
+                               | (lines[row].charAt(col + 1) == ' ' ? Maze.EAST : 0)
+                               | (lines[row].charAt(col - 1) == ' ' ? Maze.WEST : 0);
+            }
+        }
+
+        return new Maze(maze);
     }
 
     public Maze(int[][] maze) {
@@ -57,7 +95,7 @@ public class Maze {
         }
         // draw the bottom line
         for (int j = 0; j < height; j++) {
-            System.out.print("+---");
+            System.out.print((maze[width - 1][j] & SOUTH) == 0 ? "+---" : "+   ");
         }
         System.out.println("+");
     }
@@ -132,6 +170,14 @@ public class Maze {
             this.dx = dx;
             this.dy = dy;
         }
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 
     public String exportTextCase() {
