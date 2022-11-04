@@ -7,10 +7,18 @@ public class Point {
     public static final int VISITED = 1;
     public static final int CHOSEN = 2;
 
+    private Point parent;
+
+
+
+    private int distance;
+
     public Point(int row, int col){
         this.row = row;
         this.col = col;
         this.state = UNVISITED;
+        this.parent = null;
+        this.distance = -1;
     }
 
     public int getSeenAt() {
@@ -37,6 +45,20 @@ public class Point {
         this.state = state;
     }
 
+    public void setParent(Point parent){
+        this.parent = parent;
+    }
+
+    public Point getParent(){
+        return this.parent;
+    }
+    public int getDistance() {
+        return distance;
+    }
+
+    public void setDistance(int distance) {
+        this.distance = distance;
+    }
     @Override
     public String toString() {
         return "Point{" +

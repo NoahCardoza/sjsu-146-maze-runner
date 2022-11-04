@@ -11,5 +11,10 @@ public class Main {
         mazeRunner.run();
 
         mazeRunner.report();
+
+        MazeRunner mr = new BFSMazeRunner(maze55);
+        mr.run();
+        mr.report();
+
     }
 }
