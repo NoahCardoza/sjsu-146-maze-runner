@@ -47,7 +47,7 @@ class MazeRunnerTest {
     public void crossReferenceTests(){
         Maze maze;
         MazeRunner bfsMazeRunner, dfsMazeRunner;
-        Stack<Point> bfsPoints, dfsPoints;
+        Object[] bfsPoints, dfsPoints;
 
 
         for (int i = 0; i < 7; i++) {
@@ -57,13 +57,16 @@ class MazeRunnerTest {
             dfsMazeRunner = new DFSMazeRunner(maze);
             dfsMazeRunner.run();
 
-            bfsMazeRunner.report();
-            dfsMazeRunner.report();
+            // make a copy of the array before reporting
+            // because the report will consume the path
+            // stack
+            dfsPoints = dfsMazeRunner.getPath().toArray();
+            bfsPoints = bfsMazeRunner.getPath().toArray();
 
-            dfsPoints = dfsMazeRunner.getPath();
-            bfsPoints = bfsMazeRunner.getPath();
+            System.out.println(bfsMazeRunner.report());
+            System.out.println(dfsMazeRunner.report());
 
-            assertArrayEquals(dfsPoints.toArray(), bfsPoints.toArray());
+            assertArrayEquals(dfsPoints, bfsPoints);
         }
     }
 }

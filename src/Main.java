@@ -7,11 +7,10 @@ public class Main {
         MazeRunner mazeRunner = new DFSMazeRunner(maze55);
         mazeRunner.run();
 
-        mazeRunner.report();
+        System.out.println(mazeRunner.report());
 
         MazeRunner mr = new BFSMazeRunner(maze55);
         mr.run();
-        mr.report();
-
+        System.out.println(mr.report());
     }
 }

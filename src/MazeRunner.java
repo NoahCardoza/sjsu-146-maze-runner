@@ -1,9 +1,11 @@
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Stack;
 
 /**
- * An abstract class containing the general methods to parse
- * and report the solution of solved mazes.
+ * An abstract class containing the general methods to parse,
+ * solve, and report the solution of a solved maze.
  */
 public abstract class MazeRunner {
     private final Maze maze;
@@ -17,9 +19,9 @@ public abstract class MazeRunner {
     protected int visited;
 
     /**
-     * Construct a new MazeRunner.
+     * Construct a new MazeRunner from a Maze.
      *
-     * @param maze the maze to run
+     * @param maze the maze to solve and report on
      */
     public MazeRunner(Maze maze){
         graph = new AdjacencyList<>();
@@ -32,7 +34,8 @@ public abstract class MazeRunner {
     }
 
     /**
-     * Converts the maze matrix into an adjacency list and matrix.
+     * Converts the maze bitmask matrix into an adjacency list and matrix
+     * of Point class instances.
      */
     private void mazeToGraph(){
         int [][] mazeArray = maze.getMaze();
@@ -43,7 +46,6 @@ public abstract class MazeRunner {
             }
             this.matrix.add(points);
         }
-
 
         for (int row = 0; row < maze.getHeight(); row++){
             for (int col = 0; col < maze.getWidth(); col++){
@@ -92,26 +94,32 @@ public abstract class MazeRunner {
 
     /**
      * Generates a report on the maze solution.
-     * TODO: return a string rather then print to STDOUT
+     *
+     * @return a report of the solution as a string
      */
-    public void report() {
-        System.out.print(maze.displayMaze((row, col) -> {
+    public String report() {
+        StringWriter writer = new StringWriter();
+        PrintWriter out = new PrintWriter(writer);
+
+        out.print(maze.displayMaze((row, col) -> {
             String lastSeen = Integer.toString(get(row, col).getSeenAt());
             return lastSeen.substring(lastSeen.length() - 1);
         }));
 
-        System.out.print(maze.displayMaze((row, col) -> get(row, col).getState() == Point.CHOSEN ? "#" : " "));
+        out.print(maze.displayMaze((row, col) -> get(row, col).getState() == Point.CHOSEN ? "#" : " "));
 
-        System.out.print("Path: ");
+        out.print("Path: ");
         int pathLength = 0;
         while (!path.isEmpty()) {
             Point point = path.pop();
-            System.out.printf("(%s, %s) ", point.getCol(), point.getRow());
+            out.printf("(%s, %s) ", point.getCol(), point.getRow());
             pathLength++;
         }
-        System.out.println();
-        System.out.printf("Length of path: %s%n", pathLength);
-        System.out.printf("Visited cells: %s%n", visited);
+        out.println();
+        out.printf("Length of path: %s%n", pathLength);
+        out.printf("Visited cells: %s%n", visited);
+
+        return writer.toString();
     }
 
     /**
@@ -119,10 +127,22 @@ public abstract class MazeRunner {
      */
     public abstract void run();
 
+    /**
+     * Accesses the shortest path stack.
+     *
+     * @return a stack representing the shortest path
+     * from the entrance to the exit of the maze
+     */
     public Stack<Point> getPath() {
         return path;
     }
 
+    /**
+     * Accesses the count of visited nodes.
+     *
+     * @return the number of nodes visited in the maze
+     * while searching for the exit of the maze
+     */
     public int getVisited() {
         return visited;
     }
