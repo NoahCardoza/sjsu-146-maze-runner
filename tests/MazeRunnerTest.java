@@ -2,68 +2,68 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
+import java.nio.file.Files;
+import java.util.Objects;
+import java.util.Stack;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 
 class MazeRunnerTest {
     @Test
-    public void testMazeRunner() {
-        int[][] test = {
-                {2, 4, 14, 12, 10},
-                {5, 10, 3, 2, 3},
-                {6, 9, 5, 9, 3},
-                {3, 4, 14, 12, 11},
-                {5, 12, 9, 4, 9}
-        };
-
-        Maze maze = new Maze(test);
-
-        maze.displayMaze();
-
-        System.out.println(maze.exportTextCase());
-
-        MazeRunner mazeRunner = new DFSMazeRunner(maze);
-        mazeRunner.run();
-
-        mazeRunner.report();
-    }
-
-
-    @Test
-    public void randomTestMazeRunner() {
-        Maze maze = new Maze(5);
-
-        maze.displayMaze();
-
-        System.out.println(maze.exportTextCase());
-
-        MazeRunner mazeRunner = new DFSMazeRunner(maze);
-        mazeRunner.run();
-        mazeRunner.report();
-    }
-
-    @Test
-    public void fromFile() throws IOException {
-        Path path = Path.of("sample-inputs/maze4.txt");
-        Maze maze = Maze.fromPath(path);
-        maze.displayMaze();
-        MazeRunner mazeRunner = new DFSMazeRunner(maze);
-        mazeRunner.run();
-        mazeRunner.report();
-    }
-
-    @Test
-    public void sampleInputs() throws IOException {
+    public void updateFileTests() throws IOException {
         File folder = new File("./sample-inputs");
-        for (final File file : folder.listFiles()) {
+        for (final File file : Objects.requireNonNull(folder.listFiles())) {
             if (file.getName().endsWith(".txt")) {
-                Maze maze = Maze.fromPath(file.toPath());
-                maze.displayMaze();
-
-                MazeRunner mazeRunner = new DFSMazeRunner(maze);
-                mazeRunner.run();
-                mazeRunner.report();
+                UnitTest unitTest = new UnitTest(Maze.fromString(Files.readString(file.toPath()), 2, 2));
+                unitTest.run();
+//                unitTest.getDfs().report();
+                unitTest.saveAs(new File("./tests/mazes/" + file.getName()));
             }
+        }
+    }
+    @Test
+    public void fileTests() throws IOException {
+        File folder = new File("./tests/mazes");
+        for (final File file : Objects.requireNonNull(folder.listFiles())) {
+            if (file.getName().endsWith("maze4.txt")) {
+                UnitTest unitTest = new UnitTest(file);
+
+                unitTest.run();
+
+                assertEquals(unitTest.getDfsResult().visited(), unitTest.getDfs().getVisited());
+                assertEquals(unitTest.getBfsResult().visited(), unitTest.getBfs().getVisited());
+
+                assertArrayEquals(unitTest.getDfsResult().path().toArray(), unitTest.getDfs().getPath().toArray());
+                assertArrayEquals(unitTest.getBfsResult().path().toArray(), unitTest.getBfs().getPath().toArray());
+            }
+        }
+    }
+
+    /**
+     * Tests the DFS implementation against the BSF implementation.
+     */
+    @Test
+    public void crossReferenceTests(){
+        Maze maze;
+        MazeRunner bfsMazeRunner, dfsMazeRunner;
+        Stack<Point> bfsPoints, dfsPoints;
+
+
+        for (int i = 0; i < 7; i++) {
+            maze = new Maze((int) Math.pow(2, i));
+            bfsMazeRunner = new BFSMazeRunner(maze);
+            bfsMazeRunner.run();
+            dfsMazeRunner = new DFSMazeRunner(maze);
+            dfsMazeRunner.run();
+
+            bfsMazeRunner.report();
+            dfsMazeRunner.report();
+
+            dfsPoints = dfsMazeRunner.getPath();
+            bfsPoints = bfsMazeRunner.getPath();
+
+            assertArrayEquals(dfsPoints.toArray(), bfsPoints.toArray());
         }
     }
 }

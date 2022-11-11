@@ -1,7 +1,4 @@
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.*;
 import java.util.Collections;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -28,17 +25,16 @@ public class Maze {
     }
 
     /**
-     * Reads a printed maze and generates the maze matrix.
+     * Reads a maze from a string and generates the maze matrix.
      *
-     * @param path the file path of the input file
+     * @param string the file path of the input file
+     * @param xPad the number of chars per column
+     * @param yPad the number of chars per row
      *
      * @return returns a new Maze instance with data from the new file
-     *
-     * @throws IOException if the file cannot be found or read
      */
-    static public Maze fromPath(Path path) throws IOException {
-        String fileContents = Files.readString(path, StandardCharsets.UTF_8);
-        String[] lines = fileContents.split("\n");
+    static public Maze fromString(String string, int xPad, int yPad) {
+        String[] lines = string.split("\n");
 
         String[] dimensions = lines[0].trim().split("\s");
 
@@ -49,12 +45,12 @@ public class Maze {
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                int row = (j * 2) + 2; // +1 for the first line
-                int col = (i * 2) + 1;
-                maze[j][i] |= (lines[row - 1].charAt(col) == ' ' ? Maze.NORTH : 0)
-                               | (lines[row + 1].charAt(col) == ' ' ? Maze.SOUTH : 0)
-                               | (lines[row].charAt(col + 1) == ' ' ? Maze.EAST : 0)
-                               | (lines[row].charAt(col - 1) == ' ' ? Maze.WEST : 0);
+                int row = (j * yPad) + 1; // +1 for the first line
+                int col = (i * xPad);
+                maze[j][i] |= (lines[row].charAt(col + 1) == ' ' ? Maze.NORTH : 0)
+                               | (lines[row + yPad].charAt(col + 1) == ' ' ? Maze.SOUTH : 0)
+                               | (lines[row + 1].charAt(col + xPad) == ' ' ? Maze.EAST : 0)
+                               | (lines[row + 1].charAt(col) == ' ' ? Maze.WEST : 0);
             }
         }
 
@@ -76,28 +72,35 @@ public class Maze {
     }
 
     //prints the maze with the cells and walls removed
-    public void displayMaze() {
-        displayMaze((row, col) -> " ");
+    public String displayMaze() {
+        return displayMaze((row, col) -> " ");
     }
 
-    public void displayMaze(MazeGetter solution) {
+    public String displayMaze(MazeGetter solution) {
+        StringWriter writer = new StringWriter();
+        PrintWriter out = new PrintWriter(writer);
+
         for (int i = 0; i < width; i++) {
             // draw the north edge
             for (int j = 0; j < height; j++) {
-                System.out.print((maze[i][j] & NORTH) == 0 ? "+---" : "+   ");
+                out.print((maze[i][j] & NORTH) == 0 ? "+---" : "+   ");
             }
-            System.out.println("+");
+            out.println("+");
             // draw the west edge
             for (int j = 0; j < height; j++) {
-                System.out.print((maze[i][j] & WEST) == 0 ? "| " + solution.get(i, j) + " " : "  " + solution.get(i, j) + " ");
+                out.print((maze[i][j] & WEST) == 0 ? "| " + solution.get(i, j) + " " : "  " + solution.get(i, j) + " ");
             }
-            System.out.println("|");
+            out.println("|");
         }
+
         // draw the bottom line
         for (int j = 0; j < height; j++) {
-            System.out.print((maze[width - 1][j] & SOUTH) == 0 ? "+---" : "+   ");
+            out.print((maze[width - 1][j] & SOUTH) == 0 ? "+---" : "+   ");
         }
-        System.out.println("+");
+
+        out.println("+");
+
+        return writer.toString();
     }
 
 
@@ -125,15 +128,6 @@ public class Maze {
                 generateMaze(nx, ny);
 //                maze[nx][ny] ^= direction.opposite.bit;
             }
-        }
-    }
-
-    //prints the value of maze array
-    public void displayCells() {
-        for (int i = 0; i< width; i++) {
-            for (int j = 0; j< height; j++)
-                System.out.print(" "+ maze[i][j]);
-            System.out.println();
         }
     }
 

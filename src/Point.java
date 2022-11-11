@@ -9,9 +9,15 @@ public class Point {
 
     private Point parent;
 
-
-
     private int distance;
+
+    public Point(int[] coords){
+        this.row = coords[1];
+        this.col = coords[0];
+        this.state = UNVISITED;
+        this.parent = null;
+        this.distance = -1;
+    }
 
     public Point(int row, int col){
         this.row = row;

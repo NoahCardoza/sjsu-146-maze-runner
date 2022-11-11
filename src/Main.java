@@ -1,9 +1,6 @@
 public class Main {
     public static void main(String[] args) {
-        Maze maze55 = new Maze(5);
-
-        maze55.displayCells();
-        maze55.displayMaze();
+        Maze maze55 = new Maze(10);
 
         System.out.println(maze55.exportTextCase());
 

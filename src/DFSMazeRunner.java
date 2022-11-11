@@ -25,17 +25,17 @@ public class DFSMazeRunner extends MazeRunner {
      * @return whether the end was found
      */
     private boolean run(Point point) {
-        if (point == exit) {
-            path.push(point);
-            point.setState(Point.CHOSEN);
-            return true;
-        }
-
         if (point.getState() == Point.VISITED) {
             return false;
         }
 
         point.setSeenAt(visited++);
+
+        if (point == exit) {
+            path.push(point);
+            point.setState(Point.CHOSEN);
+            return true;
+        }
 
         point.setState(Point.VISITED);
 

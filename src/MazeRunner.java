@@ -36,17 +36,17 @@ public abstract class MazeRunner {
      */
     private void mazeToGraph(){
         int [][] mazeArray = maze.getMaze();
-        for (int row = 0; row < mazeArray.length; row++) {
+        for (int row = 0; row < maze.getHeight(); row++) {
             ArrayList<Point> points = new ArrayList<>();
-            for (int col = 0; col < mazeArray[0].length; col++) {
+            for (int col = 0; col < maze.getWidth(); col++) {
                 points.add(new Point(row, col));
             }
             this.matrix.add(points);
         }
 
 
-        for (int row = 0; row < mazeArray.length; row++){
-            for (int col = 0; col < mazeArray[0].length; col++){
+        for (int row = 0; row < maze.getHeight(); row++){
+            for (int col = 0; col < maze.getWidth(); col++){
                 int node = mazeArray[row][col];
 
                 Point current = matrix.get(row).get(col);
@@ -92,16 +92,15 @@ public abstract class MazeRunner {
 
     /**
      * Generates a report on the maze solution.
-     *
      * TODO: return a string rather then print to STDOUT
      */
     public void report() {
-        maze.displayMaze((row, col) -> {
+        System.out.print(maze.displayMaze((row, col) -> {
             String lastSeen = Integer.toString(get(row, col).getSeenAt());
             return lastSeen.substring(lastSeen.length() - 1);
-        });
+        }));
 
-        maze.displayMaze((row, col) -> get(row, col).getState() == Point.CHOSEN ? "#" : " ");
+        System.out.print(maze.displayMaze((row, col) -> get(row, col).getState() == Point.CHOSEN ? "#" : " "));
 
         System.out.print("Path: ");
         int pathLength = 0;
@@ -119,4 +118,12 @@ public abstract class MazeRunner {
      * Solves the maze.
      */
     public abstract void run();
+
+    public Stack<Point> getPath() {
+        return path;
+    }
+
+    public int getVisited() {
+        return visited;
+    }
 }
