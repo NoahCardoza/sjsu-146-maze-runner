@@ -1,3 +1,5 @@
+package cardozapavlik.cs146.project3;
+
 /**
  * Represents a node in the graph and used to store
  * information about a point in the graph.

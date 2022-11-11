@@ -1,3 +1,5 @@
+package cardozapavlik.cs146.project3;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -14,7 +16,11 @@ public class UnitTest {
     private final Result bfsResult;
     private final Result dfsResult;
 
-    record Result(int visited, Stack<Point> path) { }
+    /**
+     * Tracks information loaded from the unit test
+     * files.
+     */
+    public record Result(int visited, Stack<Point> path) { }
 
     /**
      * Constructs a UnitTest instance from a file.

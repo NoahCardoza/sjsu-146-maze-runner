@@ -1,3 +1,4 @@
+import cardozapavlik.cs146.project3.AdjacencyList;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;

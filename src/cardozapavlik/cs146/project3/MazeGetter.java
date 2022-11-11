@@ -1,3 +1,5 @@
+package cardozapavlik.cs146.project3;
+
 /**
  * Interface defined for modular design of the
  * maze display method.
