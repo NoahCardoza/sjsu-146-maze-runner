@@ -98,12 +98,23 @@ public abstract class MazeRunner {
      * @return a report of the solution as a string
      */
     public String report() {
+        if (path.isEmpty()) {
+            throw new RuntimeException("The solve path has already been consumed or the .run() hasn't been called yet.");
+        }
+
         StringWriter writer = new StringWriter();
         PrintWriter out = new PrintWriter(writer);
 
+        out.printf("Report: %s (%s, %s)%n%n", getName(), maze.getWidth(), maze.getHeight());
+
         out.print(maze.displayMaze((row, col) -> {
-            String lastSeen = Integer.toString(get(row, col).getSeenAt());
-            return lastSeen.substring(lastSeen.length() - 1);
+            if (row == 0 && col == 0) {
+                return "0";
+            }
+
+            int seenAt = get(row, col).getSeenAt();
+            String lastSeen = Integer.toString(seenAt);
+            return seenAt == 0 ? " " : lastSeen.substring(lastSeen.length() - 1);
         }));
 
         out.print(maze.displayMaze((row, col) -> get(row, col).getState() == Point.CHOSEN ? "#" : " "));
@@ -121,6 +132,8 @@ public abstract class MazeRunner {
 
         return writer.toString();
     }
+
+    protected abstract String getName();
 
     /**
      * Solves the maze.

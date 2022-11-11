@@ -5,22 +5,33 @@ import java.util.Iterator;
  * A Breadth first search implementation to solve the maze
  */
 public class BFSMazeRunner extends MazeRunner{
+    private final LinkedList<Point> queue;
 
-    private LinkedList<Point> queue;
+    @Override
+    protected String getName() {
+        return "BFS";
+    }
+
     /**
      * Constructs a BFS based maze runner
-     * @param maze, the maze that will be solved
+     *
+     * @param maze the maze that will be solved
      */
     public BFSMazeRunner(Maze maze){
         super(maze);
+        queue = new LinkedList<>();
     }
 
     @Override
     public void run() {
-        queue = new LinkedList<>();
         run(entrance);
     }
 
+    /**
+     * Iterative BFS solution to solve the maze.
+     *
+     * @param point the entrance point to start the search on
+     */
     public void run(Point point){
         Point current = null;
 

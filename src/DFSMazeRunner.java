@@ -4,6 +4,11 @@ import java.util.Iterator;
  * A Depth first search implementation of the maze runner.
  */
 public class DFSMazeRunner extends MazeRunner {
+    @Override
+    protected String getName() {
+        return "DFS";
+    }
+
     /**
      * Constructs a DFS based maze runner.
      *

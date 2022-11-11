@@ -3,23 +3,25 @@ import java.util.Collections;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-/*
- * recursive backtracking algorithm
- * shamelessly borrowed from the ruby at
- * http://weblog.jamisbuck.org/2010/12/27/maze-generation-recursive-backtracking
+/**
+ * Recursive backtracking algorithm to generate random mazes.
+ * <a href="http://weblog.jamisbuck.org/2010/12/27/maze-generation-recursive-backtracking">Reference</a>
  */
 public class Maze {
     public static final int NORTH = 0b1;
     public static final int SOUTH = 0b10;
     public static final int EAST = 0b100;
     public static final int WEST = 0b1000;
-
-    //coordinates row x, column y
     private final int width;
     private final int height;
     //stores the cells
     private final int[][] maze;
 
+    /**
+     * Constructs a square maze.
+     *
+     * @param size the width and height of the maze
+     */
     public Maze(int size) {
         this(size, size);
     }
@@ -57,13 +59,25 @@ public class Maze {
         return new Maze(maze);
     }
 
+    /**
+     * Construct a maze from a bitmask matrix from an
+     * already generated maze.
+     *
+     * @param maze the bitmask matrix representation
+     *             of the maze
+     */
     public Maze(int[][] maze) {
         this.width = maze.length;
         this.height = maze[0].length;
         this.maze = maze;
     }
 
-    //Constructor
+    /**
+     * Constructs a rectangular maze.
+     *
+     * @param width the width of the maze
+     * @param height the height of the maze
+     */
     public Maze(int width, int height) {
         this.width = width;
         this.height = height;
@@ -71,12 +85,28 @@ public class Maze {
         generateMaze(0, 0);
     }
 
-    //prints the maze with the cells and walls removed
+    /**
+     * Provides a visual representation of the maze as
+     * a string.
+     *
+     * @return a string representing the maze
+     */
     public String displayMaze() {
         return displayMaze((row, col) -> " ");
     }
 
-    public String displayMaze(MazeGetter solution) {
+    /**
+     * Generates a visual representation of the maze
+     * as a string using the callback to determine
+     * which characters to place in the halls of the
+     * maze.
+     *
+     * @param getter a callback that defines which characters
+     *               to place in each coordinate of the maze
+     *
+     * @return @return a string representing the maze
+     */
+    public String displayMaze(MazeGetter getter) {
         StringWriter writer = new StringWriter();
         PrintWriter out = new PrintWriter(writer);
 
@@ -88,7 +118,7 @@ public class Maze {
             out.println("+");
             // draw the west edge
             for (int j = 0; j < height; j++) {
-                out.print((maze[i][j] & WEST) == 0 ? "| " + solution.get(i, j) + " " : "  " + solution.get(i, j) + " ");
+                out.print((maze[i][j] & WEST) == 0 ? "| " + getter.get(i, j) + " " : "  " + getter.get(i, j) + " ");
             }
             out.println("|");
         }
@@ -103,9 +133,26 @@ public class Maze {
         return writer.toString();
     }
 
+    /**
+     * Testing utility to export the bitmask matrix, so it can be
+     * loaded back in to test issues on the same matrix.
+     *
+     * @return a string that can be copied into an <code>int[][]</code> variable
+     * and passed to the <code>Maze(int[][])</code> constructor.
+     */
+    public String exportTextCase() {
+        return String.format("{{%s}}", Arrays.stream(maze).map(row -> Arrays.stream(row)
+                .mapToObj(String::valueOf)
+                .collect(Collectors.joining(", "))).collect(Collectors.joining("}, {")));
+    }
 
-    //recursive perfect maze generator, using a modified DFS
-    //(cx,cy) coordinates of current cell, and (nx,ny) coordinates of neighbor cell
+    /**
+     * Recursive perfect maze generator, using a modified DFS
+     * (cx,cy) coordinates of current cell, and (nx, ny) coordinates of neighbor cell
+     *
+     * @param cx current cell x coordinate
+     * @param cy current cell y coordinate
+     */
     private void generateMaze(int cx, int cy) {
         Direction[] directions = Direction.values();
         Collections.shuffle(Arrays.asList(directions));
@@ -131,16 +178,21 @@ public class Maze {
         }
     }
 
-    //checks if 0<=v<upper
+    /**
+     * Make sure the index is within the proper bounds.
+     *
+     * @param v index to test
+     * @param upper upper bound
+     *
+     * @return weather the index falls between the bounds
+     */
     private static boolean between(int v, int upper) {
         return (v >= 0) && (v < upper);
     }
 
-    public int[][] getMaze() {
-        return maze;
-    }
-
-    // enum type for all directions
+    /**
+     * Enum type for all directions
+     */
     private enum Direction {
         //direction(bit, column move, row move)
         //bit 1 is North, 2 is South, 4 is East and 8 is West
@@ -166,17 +218,15 @@ public class Maze {
         }
     }
 
+    public int[][] getMaze() {
+        return maze;
+    }
+
     public int getWidth() {
         return width;
     }
 
     public int getHeight() {
         return height;
-    }
-
-    public String exportTextCase() {
-        return String.format("{{%s}}", Arrays.stream(maze).map(row -> Arrays.stream(row)
-                .mapToObj(String::valueOf)
-                .collect(Collectors.joining(", "))).collect(Collectors.joining("}, {")));
     }
 }

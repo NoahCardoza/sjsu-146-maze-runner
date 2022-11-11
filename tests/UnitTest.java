@@ -16,6 +16,13 @@ public class UnitTest {
 
     record Result(int visited, Stack<Point> path) { }
 
+    /**
+     * Constructs a UnitTest instance from a file.
+     *
+     * @param file the file to load
+     *
+     * @throws IOException when the file cannot be loaded
+     */
     public UnitTest(File file) throws IOException {
         int yPad = 2;
         String testContents = Files.readString(file.toPath(), StandardCharsets.UTF_8);
@@ -38,6 +45,11 @@ public class UnitTest {
         dfs = new DFSMazeRunner(maze);
     }
 
+    /**
+     * Constructs a UnitTest instance from a maze.
+     *
+     * @param maze the maze to test
+     */
     public UnitTest(Maze maze) {
         this.maze = maze;
         bfs = new BFSMazeRunner(maze);
@@ -46,11 +58,22 @@ public class UnitTest {
         bfsResult = null;
     }
 
+    /**
+     * Runs both solving algorithms.
+     */
     public void run() {
         bfs.run();
         dfs.run();
     }
 
+    /**
+     * Saves the results to a file to be verifies and reloaded later
+     * to ensure nothing breaks.
+     *
+     * @param file the file to save to
+     *
+     * @throws IOException when the file cannot be written to
+     */
     public void saveAs(File file) throws IOException {
         FileOutputStream fileOutputStream = new FileOutputStream(file);
         PrintStream out = new PrintStream(fileOutputStream);
@@ -70,10 +93,6 @@ public class UnitTest {
 
         fileOutputStream.close();
         out.close();
-    }
-
-    public Maze getMaze() {
-        return maze;
     }
 
     public DFSMazeRunner getDfs() {
