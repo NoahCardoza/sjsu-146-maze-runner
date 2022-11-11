@@ -22,22 +22,16 @@ public class BFSMazeRunner extends MazeRunner{
         queue = new LinkedList<>();
     }
 
-    @Override
-    public void run() {
-        run(entrance);
-    }
-
     /**
      * Iterative BFS solution to solve the maze.
-     *
-     * @param point the entrance point to start the search on
      */
-    public void run(Point point){
+    @Override
+    public void run() {
         Point current = null;
 
-        point.setState(Point.VISITED);
-        point.setDistance(0);
-        queue.add(point);
+        entrance.setState(Point.VISITED);
+        entrance.setDistance(0);
+        queue.add(entrance);
 
         while(!queue.isEmpty()){
             current = queue.remove();
@@ -67,6 +61,4 @@ public class BFSMazeRunner extends MazeRunner{
 
         }
     }
-
-
 }

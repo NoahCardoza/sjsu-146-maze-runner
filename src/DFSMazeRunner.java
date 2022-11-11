@@ -17,13 +17,17 @@ public class DFSMazeRunner extends MazeRunner {
     public DFSMazeRunner(Maze maze) {
         super(maze);
     }
+
+    /**
+     * DFS solution to solving the maze.
+     */
     @Override
     public void run() {
         run(entrance);
     }
 
     /**
-     * Recursive DFS solution to solving the maze.
+     * Recursive DFS helper to solve the maze.
      *
      * @param point a point in the maze to process
      *

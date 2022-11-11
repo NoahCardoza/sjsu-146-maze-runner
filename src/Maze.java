@@ -14,7 +14,6 @@ public class Maze {
     public static final int WEST = 0b1000;
     private final int width;
     private final int height;
-    //stores the cells
     private final int[][] maze;
 
     /**
