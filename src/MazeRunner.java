@@ -108,13 +108,8 @@ public abstract class MazeRunner {
         out.printf("Report: %s (%s, %s)%n%n", getName(), maze.getWidth(), maze.getHeight());
 
         out.print(maze.displayMaze((row, col) -> {
-            if (row == 0 && col == 0) {
-                return "0";
-            }
-
-            int seenAt = get(row, col).getSeenAt();
-            String lastSeen = Integer.toString(seenAt);
-            return seenAt == 0 ? " " : lastSeen.substring(lastSeen.length() - 1);
+            Point point = get(row, col);
+            return point.getState() == Point.UNVISITED ? " " : Integer.toString(point.getSeenAt() % 10);
         }));
 
         out.print(maze.displayMaze((row, col) -> get(row, col).getState() == Point.CHOSEN ? "#" : " "));
